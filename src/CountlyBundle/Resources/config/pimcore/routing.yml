@@ -1,0 +1,5 @@
+countly:
+    resource: "@CountlyBundle/Controller/"
+    type:     annotation
+    prefix:   /saltid/countly
+

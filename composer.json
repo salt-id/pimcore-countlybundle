@@ -1,0 +1,29 @@
+{
+    "name": "saltid/pimcore-countlybundle",
+    "description": "Countly Analytics with Pimcore",
+    "type": "pimcore-bundle",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Yulius Ardian Febrianto",
+            "email": "yuliusardin@gmail.com"
+        }
+    ],
+    "require": {
+        "pimcore/pimcore": "^5.4.0 | ^6.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SaltId\\CountlyBundle\\" : "src/CountlyBundle/"
+        }
+    },
+    "extra": {
+        "pimcore": {
+            "bundles": [
+                "SaltId\\CountlyBundle\\CountlyBundle"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false
+}

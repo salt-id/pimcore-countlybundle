@@ -1,0 +1,11 @@
+pimcore:
+  targeting:
+    data_providers:
+      countly_funnel_complete: SaltId\CountlyBundle\Targeting\DataProvider\CountlyFunnelComplete
+    conditions:
+      countly_has_complete_funnel: SaltId\CountlyBundle\Targeting\Condition\CountlyHasCompleteFunnel
+    action_handlers:
+
+
+monolog:
+  channels: ['countly']
