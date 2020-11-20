@@ -95,4 +95,41 @@
             }
         })
     );
+
+    pimcore.settings.targeting.conditions.register(
+        'countly_has_not_custom_property',
+        Class.create(pimcore.settings.targeting.condition.abstract, {
+            getName: function () {
+                return t("countlyHasNotCustomProperty");
+            },
+
+            getPanel: function (panel, data) {
+                var id = Ext.id();
+
+                this.formCustomProperty = new Ext.form.FormPanel({
+                    id: id,
+                    forceLayout: true,
+                    style: 'margin: 10px 0 0 0',
+                    bodyStyle: 'padding: 10px 30px 10px 30px; min-height:40px;',
+                    tbar: pimcore.settings.targeting.conditions.getTopBar(this, id, panel, data),
+                    items: [
+                        {
+                            name: 'attributeKey',
+                            fieldLabel: 'Attribute Key',
+                            xtype: 'textfield',
+                            width: 500,
+                            value: ('undefined' !== typeof data.attributeKey) ? data.attributeKey : null,
+                        },
+                        {
+                            xtype: 'hidden',
+                            name: 'type',
+                            value: 'countly_has_not_custom_property' // the identifier chosen before when registering the PHP class
+                        }
+                    ]
+                });
+
+                return this.formCustomProperty;
+            },
+        })
+    );
 }());

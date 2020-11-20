@@ -2,8 +2,10 @@ pimcore:
   targeting:
     data_providers:
       countly_funnel_complete: SaltId\CountlyBundle\Targeting\DataProvider\CountlyFunnelComplete
+      countly_custom_property: SaltId\CountlyBundle\Targeting\DataProvider\CountlyCustomProperty
     conditions:
       countly_has_complete_funnel: SaltId\CountlyBundle\Targeting\Condition\CountlyHasCompleteFunnel
+      countly_has_not_custom_property: SaltId\CountlyBundle\Targeting\Condition\CountlyHasNotCustomProperty
     action_handlers:
 
 

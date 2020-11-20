@@ -31,6 +31,7 @@ services:
 
     # Register DataProvider
     SaltId\CountlyBundle\Targeting\DataProvider\CountlyFunnelComplete: ~
+    SaltId\CountlyBundle\Targeting\DataProvider\CountlyCustomProperty: ~
 
     # Register ActionHandler
     SaltId\CountlyBundle\Targeting\ActionHandler\SomethingHere: ~
