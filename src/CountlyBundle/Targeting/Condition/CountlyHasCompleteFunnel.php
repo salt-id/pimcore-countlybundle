@@ -48,18 +48,18 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
     {
         $hasDone = $visitorInfo->getRequest()->getSession()->get(CountlyFunnelComplete::PROVIDER_KEY);
 
-        if ($hasDone) {
+        if (null !== $hasDone) {
             return $hasDone;
         }
-        
+
         // check cookies if has 'cly_id' hit countly api 'user_details' with MongoDB Query
         // {"did":{"$in":["cly_id"]}}
         $cookies = $visitorInfo->getRequest()->cookies;
-        if (!$cookies->has('cly_id')) {
+        if (!$cookies->has('mid')) {
             return false;
         }
 
-        $clyId = $cookies->get('cly_id');
+        $clyId = $cookies->get('mid');
         // build a MongoDB query.
         $mongoDbQueryUidIn = [
             'did' => [
@@ -117,6 +117,7 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
 
         $stepsCount = count($matchedFunnel['steps']) ?? 0;
         $userCurrentSteps = $matchedFunnel['step'] ?? 0;
+        $userCurrentSteps = ($userCurrentSteps > 0 ? $userCurrentSteps - 1 : $userCurrentSteps);
         $userCurrentStepName = $matchedFunnel['steps'][$userCurrentSteps] ?? '';
 
         // @todo if in final steps or complete should ignore ?
