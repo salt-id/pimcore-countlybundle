@@ -46,6 +46,12 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
 
     public function match(VisitorInfo $visitorInfo): bool
     {
+        $hasDone = $visitorInfo->getRequest()->getSession()->get(CountlyFunnelComplete::PROVIDER_KEY);
+
+        if ($hasDone) {
+            return $hasDone;
+        }
+        
         // check cookies if has 'cly_id' hit countly api 'user_details' with MongoDB Query
         // {"did":{"$in":["cly_id"]}}
         $cookies = $visitorInfo->getRequest()->cookies;
@@ -86,7 +92,8 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
 
         $userDetailParams = [
             'query' => [
-                'uid' => $id
+                'uid' => $id,
+                'period' => 'hour'
             ]
         ];
 
@@ -116,6 +123,9 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
 
         // check if $stepsFromConfig === $userCurrentStepName then condition matched. return true.
         if ($stepsFromConfig === $userCurrentStepName) {
+            $visitorInfo->getRequest()->getSession()->set('cly_id', $id);
+            $visitorInfo->getRequest()->getSession()->set(CountlyFunnelComplete::PROVIDER_KEY, true);
+
             $this->setMatchedVariable('funnels', $matchedFunnel);
             return true;
         }

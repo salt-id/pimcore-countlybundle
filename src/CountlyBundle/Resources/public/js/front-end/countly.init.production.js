@@ -1,7 +1,7 @@
 Countly.init({
     app_key: countlyAppKey,
-    url: "https://try.count.ly",
-    debug:true
+    url: "https://nis.count.ly",
+    debug: false
 });
 
 Countly.begin_session();

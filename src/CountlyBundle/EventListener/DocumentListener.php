@@ -43,10 +43,16 @@ class DocumentListener implements EventSubscriberInterface
         }
 
         $countlyAppKey = getenv("COUNTLY_APP_KEY", null);
+        $environment = getenv('PIMCORE_ENVIRONMENT');
 
         $this->headScript->offsetSetFile(-1, '/bundles/countly/js/front-end/countly.js');
-        $this->headScript->offsetSetFile(-2, '/bundles/countly/js/front-end/countly.init.js');
-        $this->headScript->offsetSetFile(-3, 'https://cdnjs.cloudflare.com/ajax/libs/countly-sdk-web/19.8.0/countly.min.js');
+        if ($environment === 'dev') {
+            $this->headScript->offsetSetFile(-2, '/bundles/countly/js/front-end/countly.init.development.js');
+        }
+        if ($environment === 'prod') {
+            $this->headScript->offsetSetFile(-2, '/bundles/countly/js/front-end/countly.init.production.js');
+        }
+        $this->headScript->offsetSetFile(-3, 'https://cdn.jsdelivr.net/npm/countly-sdk-web@latest/lib/countly.min.js');
         $this->headScript->offsetSetScript(-4, 'var countlyAppKey = "' .$countlyAppKey . '"');
     }
 }
