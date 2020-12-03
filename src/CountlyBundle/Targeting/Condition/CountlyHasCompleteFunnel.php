@@ -46,10 +46,17 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
 
     public function match(VisitorInfo $visitorInfo): bool
     {
-        $hasDone = $visitorInfo->getRequest()->getSession()->get(CountlyFunnelComplete::PROVIDER_KEY);
+        $currentFunnels = $visitorInfo->getRequest()->getSession()->get(CountlyFunnelComplete::PROVIDER_KEY);
 
-        if (null !== $hasDone) {
-            return $hasDone;
+        $funnelsFromConfig = $this->configs['funnels'] ?? null;
+        $stepsFromConfig = $this->configs['steps'] ?? null;
+
+        $key = sprintf('%s_%s',$funnelsFromConfig, $stepsFromConfig);
+        if (
+            null !== $currentFunnels &&
+            $currentFunnel = $currentFunnels[$key]
+        ) {
+            return $currentFunnel;
         }
 
         // check cookies if has 'cly_id' hit countly api 'user_details' with MongoDB Query
@@ -104,9 +111,6 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
             return false;
         }
 
-        $funnelsFromConfig = $this->configs['funnels'] ?? null;
-        $stepsFromConfig = $this->configs['steps'] ?? null;
-
         $matchedFunnel = null;
         foreach ($funnels as $funnel) {
             if ($funnel['_id'] === $funnelsFromConfig) {
@@ -124,8 +128,12 @@ class CountlyHasCompleteFunnel extends AbstractVariableCondition implements Data
 
         // check if $stepsFromConfig === $userCurrentStepName then condition matched. return true.
         if ($stepsFromConfig === $userCurrentStepName) {
+            $currentFunnels = array_merge_recursive($currentFunnels ?? [], [
+                $funnelsFromConfig . '_' . $stepsFromConfig => true
+            ]);
+
             $visitorInfo->getRequest()->getSession()->set('cly_id', $id);
-            $visitorInfo->getRequest()->getSession()->set(CountlyFunnelComplete::PROVIDER_KEY, true);
+            $visitorInfo->getRequest()->getSession()->set(CountlyFunnelComplete::PROVIDER_KEY, $currentFunnels);
 
             $this->setMatchedVariable('funnels', $matchedFunnel);
             return true;

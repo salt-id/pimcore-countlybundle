@@ -55,6 +55,13 @@ class CountlyHasNotCustomProperty extends AbstractVariableCondition implements D
 
     public function match(VisitorInfo $visitorInfo): bool
     {
+        $currentProperty = $visitorInfo->getRequest()
+            ->getSession()->get(CountlyCustomProperty::PROVIDER_KEY);
+
+        if (null !== $currentProperty && $propertyExist = $currentProperty[$this->configs['attributeKey'] ?? null]) {
+            return !$propertyExist;
+        }
+
         $id = $visitorInfo->getRequest()->getSession()->get('cly_id', null);
 
         if (!$id) {
@@ -81,7 +88,16 @@ class CountlyHasNotCustomProperty extends AbstractVariableCondition implements D
             return false;
         }
 
-        if ($custom[$attributeKey]) {
+        if (!empty($custom[$attributeKey])) {
+            $currentProperty = array_merge_recursive($currentProperty ?? [], [
+                $attributeKey => true
+            ]);
+
+            $visitorInfo
+                ->getRequest()
+                ->getSession()
+                ->set(CountlyCustomProperty::PROVIDER_KEY, $currentProperty);
+
             return false;
         }
 
